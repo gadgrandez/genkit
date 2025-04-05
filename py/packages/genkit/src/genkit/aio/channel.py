@@ -22,6 +22,8 @@ import asyncio
 from collections.abc import AsyncIterator
 from typing import Generic, TypeVar
 
+from .compat.tasks import wait_for
+
 T = TypeVar('T')
 
 
@@ -111,7 +113,7 @@ class Channel(Generic[T]):
             # Wait for the pop task with a timeout, raise TimeoutError if a
             # timeout is specified and is exceeded and automatically cancel the
             # pending task.
-            return await asyncio.wait_for(pop_task, timeout=self._timeout)
+            return await wait_for(pop_task, timeout=self._timeout)
 
         try:
             # Wait for either the pop task or the close future to complete.  A
@@ -145,7 +147,7 @@ class Channel(Generic[T]):
         # Wait for the pop task with a timeout, raise TimeoutError if a timeout
         # is specified and is exceeded and automatically cancel the pending
         # task.
-        return await asyncio.wait_for(pop_task, timeout=self._timeout)
+        return await wait_for(pop_task, timeout=self._timeout)
 
     def send(self, value: T) -> None:
         """Sends a value into the channel.
